@@ -1,0 +1,16 @@
+main: com.subtextgroup.mcp.Main
+name: CraftyJustice
+version: 1.0
+author: ryanjohnson
+description: Vigilante justice system
+commands:
+  reportuser:
+    description: Reports a user
+    usage: /reportuser <username> <reason>
+    permission: craftyjustice.reportuser
+    permission-message: You don't have the craftyjustice.reportuser permission!
+  listreports:
+    description: Queries reports
+    usage: '/listreports <query type: offender-name|reporter-name|date-range> <name|<from date MM/DD> <to date MM/DD>>'
+    permission: craftyjustice.listreports
+    permission-message: You don't have the craftyjustice.listreports permission!
