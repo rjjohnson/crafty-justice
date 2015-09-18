@@ -7,10 +7,24 @@ commands:
   reportuser:
     description: Reports a user
     usage: /reportuser <username> <reason>
+    aliases: ru
     permission: craftyjustice.reportuser
     permission-message: You don't have the craftyjustice.reportuser permission!
   listreports:
     description: Queries reports
-    usage: '/listreports <query type: offender-name|reporter-name|date-range> <name|<from date MM/DD> <to date MM/DD>>'
+    usage: '/listreports <query type: offender-name|reporter-name|date-range> <name|<from date MM/DD/YYYY> <to date MM/DD/YYYY>>'
+    aliases: lr
     permission: craftyjustice.listreports
     permission-message: You don't have the craftyjustice.listreports permission!
+  clearreports:
+    description: Clears offense reports
+    usage: '/clearreports [username]'
+    aliases: cr
+    permission: craftyjustice.clearreports
+    permission-message: You don't have the craftyjustice.clearreports permission!
+  retractreport:
+    description: Allows you to retract the most recent report you've issued
+    aliases: rr
+    usage: '/retractreport'
+    permission: craftyjustice.retractreport
+    permission-message: You don't have the craftyjustice.retractreport permission!
