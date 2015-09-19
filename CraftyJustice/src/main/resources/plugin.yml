@@ -28,3 +28,8 @@ commands:
     usage: '/retractreport'
     permission: craftyjustice.retractreport
     permission-message: You don't have the craftyjustice.retractreport permission!
+  squidme:
+    description: Bring on the calamari!
+    usage: /squidme
+    permission: craftyjustice.squidme
+    permission-message: You get no squid!

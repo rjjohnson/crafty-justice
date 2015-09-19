@@ -11,12 +11,18 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Achievement;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Main extends JavaPlugin {
 	FileConfiguration config = null;
@@ -32,8 +38,32 @@ public class Main extends JavaPlugin {
 			return clearReports(sender, command, label, args);
 		} else if("retractreport".equalsIgnoreCase(cmdName)) {
 			return retractReport(sender, command, label, args);
+		} else if("squidme".equalsIgnoreCase(cmdName)) {
+			squidMe(sender, command, label, args);
 		}
 		return false;
+	}
+	private boolean reportUser(CommandSender sender, Command command, String label, String[] args) {
+		if(args.length < 2) {
+			return false;
+		}
+		Player reporter = getServer().getPlayer(sender.getName());
+		Player reportedPlayer = getServer().getPlayer(args[0]);
+		if(reportedPlayer == null) {
+			return false;
+		}
+		String reason = "";
+		for(int i = 1; i < args.length; i++) {
+			reason += args[i] + " ";
+		}
+		reason = reason.trim();
+		getServer().broadcastMessage(sender.getName() + " reported " + reportedPlayer.getName() + " for: \"" + reason + "\"");
+		Report report = new Report(reporter, reportedPlayer, reason, new Date());
+		List<Report> reports = getAllReports();
+		reports.add(report);
+		config.set("reports", reports);
+		saveConfig();
+		return true;	
 	}
 	private boolean retractReport(CommandSender sender, Command command, String label, String[] args) {
 		List<Report> reports = getAllReports();
@@ -129,28 +159,7 @@ public class Main extends JavaPlugin {
 		sender.sendMessage("Reports:\n" + response);
 		return true;
 	}
-	private boolean reportUser(CommandSender sender, Command command, String label, String[] args) {
-		if(args.length < 2) {
-			return false;
-		}
-		Player reporter = getServer().getPlayer(sender.getName());
-		Player reportedPlayer = getServer().getPlayer(args[0]);
-		if(reportedPlayer == null) {
-			return false;
-		}
-		String reason = "";
-		for(int i = 1; i < args.length; i++) {
-			reason += args[i] + " ";
-		}
-		reason = reason.trim();
-		getServer().broadcastMessage(sender.getName() + " reported " + reportedPlayer.getName() + " for: \"" + reason + "\"");
-		Report report = new Report(reporter, reportedPlayer, reason, new Date());
-		List<Report> reports = getAllReports();
-		reports.add(report);
-		config.set("reports", reports);
-		saveConfig();
-		return true;	
-	}
+	
 	private static boolean dateBetweenInclusive(Date date, Date start, Date end) {
 		Calendar startCalendar = Calendar.getInstance();
 		startCalendar.setTime(start);
@@ -162,6 +171,38 @@ public class Main extends JavaPlugin {
 		return date.after(startCalendar.getTime()) && date.before(endCalendar.getTime());
 		
 	}
+	
+	private boolean squidMe(CommandSender sender, Command command, String label, String[] args) {
+		Player squidee = getServer().getPlayer(sender.getName());
+		Location playerLoc = squidee.getLocation();
+		World world = squidee.getWorld();
+		final List<Entity> squids = new ArrayList<>();
+		
+		for(int x = -3; x < 4; x++) {
+			for(int z = -3; z < 4; z++) {
+				if(x == 0 && z == 0) {
+					continue;
+				}
+				Location squidLoc = playerLoc.clone().add(x, 10.0, z);
+				Entity squid = world.spawnEntity(squidLoc, EntityType.SQUID);
+				squids.add(squid);
+			}
+		}
+		
+		BukkitRunnable remover = new BukkitRunnable() {
+			@Override
+			public void run() {
+				for(Entity squid : squids) {
+					squid.remove();
+				}
+			}
+		};
+		remover.runTaskLater(this, 100);
+		
+		
+		return true;
+	}
+	
 	@Override
 	public void onDisable() {
 	
