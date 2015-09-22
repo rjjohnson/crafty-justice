@@ -6,13 +6,24 @@ description: Vigilante justice system
 commands:
   reportuser:
     description: Reports a user
-    usage: /reportuser <username> <reason>
+    usage: |
+      /reportuser <username> <reason>
+      Use /reportperson to report a person using a shared account
     aliases: ru
     permission: craftyjustice.reportuser
     permission-message: You don't have the craftyjustice.reportuser permission!
+  reportperson:
+    description: Reports a person by actual name. Useful when players are sharing accounts.
+    usage: |
+      /reportperson <username> <actualname> <reason>
+      Use /reportuser when the player is using her or his personal account
+    aliases: rp
+    permission: craftyjustice.reportperson
+    permission-message: You don't have the craftyjustice.reportperson permission!
   listreports:
     description: Queries reports
-    usage: '/listreports <query type: offender-name|reporter-name|date-range> <name|<from date MM/DD/YYYY> <to date MM/DD/YYYY>>'
+    usage: |
+      '/listreports <query type: o-user|o-name|r-user|date-range> <username|actualname|<from date MM/DD/YYYY> <to date MM/DD/YYYY>>'
     aliases: lr
     permission: craftyjustice.listreports
     permission-message: You don't have the craftyjustice.listreports permission!
@@ -28,8 +39,3 @@ commands:
     usage: '/retractreport'
     permission: craftyjustice.retractreport
     permission-message: You don't have the craftyjustice.retractreport permission!
-  squidme:
-    description: Bring on the calamari!
-    usage: /squidme
-    permission: craftyjustice.squidme
-    permission-message: You get no squid!

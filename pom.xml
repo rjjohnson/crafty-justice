@@ -6,11 +6,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>CraftyJustice</name>
 	<description>Vigilante justice for Minecraft</description>
-<!-- 	<profiles>
-		<profile>
-		
-		</profile>
-	</profiles> -->
 	<repositories>
 		<repository>
             <id>spigot-repo</id>

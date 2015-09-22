@@ -12,11 +12,12 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 @SerializableAs("report")
 public class Report implements ConfigurationSerializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private String reporterUsername;
 	private String reporterUUID;
 	private String offenderUsername;
 	private String offenderUUID;
+	private String offenderPersonName;
 	private Date reportDate;
 	private String reason;
 
@@ -37,11 +38,26 @@ public class Report implements ConfigurationSerializable {
 		this.reportDate = reportDate;
 		this.reason = reason;
 	}
+	public Report(Player reporter, Player offender, String offenderPersonName, String reason, Date reportDate) {
+		if(reporter != null) {
+			this.reporterUsername = reporter.getName();
+			this.reporterUUID = reporter.getUniqueId().toString();
+		} else {
+			this.reporterUsername = "Console";
+		}
+		 
+		this.offenderUsername = offender.getName();
+		this.offenderUUID = offender.getUniqueId().toString();
+		this.setOffenderPersonName(offenderPersonName);
+		this.reportDate = reportDate;
+		this.reason = reason;
+	}
 	public Report(Map<String, String> map) {
 		this.reporterUsername = map.get("reporterUsername");
 		this.reporterUUID = map.get("reporterUUID");
 		this.offenderUsername = map.get("offenderUsername");
 		this.offenderUUID = map.get("offenderUUID");
+		this.offenderPersonName = map.get("offenderPersonName");
 		try {
 			this.reportDate = dateFormat.parse(map.get("reportDate"));
 		} catch (ParseException e) {
@@ -73,6 +89,12 @@ public class Report implements ConfigurationSerializable {
 	public void setOffenderUUID(String offenderUUID) {
 		this.offenderUUID = offenderUUID;
 	}
+	public String getOffenderPersonName() {
+		return offenderPersonName;
+	}
+	public void setOffenderPersonName(String offenderPersonName) {
+		this.offenderPersonName = offenderPersonName;
+	}
 	public Date getReportDate() {
 		return reportDate;
 	}
@@ -92,12 +114,13 @@ public class Report implements ConfigurationSerializable {
 		result.put("reporterUUID", reporterUUID);
 		result.put("offenderUsername", offenderUsername);
 		result.put("offenderUUID", offenderUUID);
+		result.put("offenderPersonName", offenderPersonName);
 		result.put("reportDate", dateFormat.format(reportDate));
 		result.put("reason", reason);
 		return result;
 	}
 
 	public String toMessageString() {
-		return "Offender: " + offenderUsername + ", Reporter: " + reporterUsername + ", Date: " + dateFormat.format(reportDate) + ", Reason: " + reason; 
+		return "Offender: " + (offenderPersonName == null ? offenderUsername : offenderPersonName + " [person logged in as " + offenderUsername + "]") + ", Reporter: " + reporterUsername + ", Date: " + dateFormat.format(reportDate) + ", Reason: " + reason; 
 	}
 }

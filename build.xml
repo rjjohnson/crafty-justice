@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="CraftyJustice" default="makejar" basedir=".">
     <target name="makejar" description="Create a jar for the project">
+    	<javac
+    	      srcdir="${basedir}/src/main/java"
+    	      includes="**/*.java"
+    	      destdir="bin"
+    	      deprecation="${javac.deprecation}"
+    	      source="1.7"
+    	      target="1.7"
+    	      includeantruntime="false">
+    	      <classpath>
+    	        <path path="${javac.classpath}:${j2ee.platform.classpath}"/>
+    	      </classpath>
+    	    </javac>
         <mkdir dir="target"></mkdir>
-        <jar destfile="target/${ant.project.name}.jar">
-            <fileset dir="bin"></fileset>
+        <jar destfile="target/${ant.project.name}.jar" includes="**/*.class">
+        	
+        	<fileset dir="bin"></fileset>
             <fileset file="src/main/resources/plugin.yml"></fileset>
         </jar>
     </target>
