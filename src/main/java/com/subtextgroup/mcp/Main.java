@@ -12,12 +12,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Main extends JavaPlugin {
 	FileConfiguration config = null;
@@ -35,7 +40,9 @@ public class Main extends JavaPlugin {
 			return clearReports(sender, command, label, args);
 		} else if("retractreport".equalsIgnoreCase(cmdName)) {
 			return retractReport(sender, command, label, args);
-		}
+		} else if("squidme".equalsIgnoreCase(cmdName)) {
+            squidMe(sender, command, label, args);
+        }
 		return false;
 	}
 	private boolean retractReport(CommandSender sender, Command command, String label, String[] args) {
@@ -204,6 +211,37 @@ public class Main extends JavaPlugin {
 		return date.after(startCalendar.getTime()) && date.before(endCalendar.getTime());
 		
 	}
+	
+	private boolean squidMe(CommandSender sender, Command command, String label, String[] args) {
+        Player squidee = getServer().getPlayer(sender.getName());
+        Location playerLoc = squidee.getLocation();
+        World world = squidee.getWorld();
+        final List<Entity> squids = new ArrayList<>();
+        
+        for(int x = -3; x < 4; x++) {
+            for(int z = -3; z < 4; z++) {
+                if(x == 0 && z == 0) {
+                    continue;
+                }
+                Location squidLoc = playerLoc.clone().add(x, 10.0, z);
+                Entity squid = world.spawnEntity(squidLoc, EntityType.SQUID);
+                squids.add(squid);
+            }
+        }
+        
+        BukkitRunnable remover = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for(Entity squid : squids) {
+                    squid.remove();
+                }
+            }
+        };
+        remover.runTaskLater(this, 100);
+        
+        
+        return true;
+    }
 	@Override
 	public void onDisable() {
 	
